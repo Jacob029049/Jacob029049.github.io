@@ -206,16 +206,6 @@
           </a>
         </li>
       
-        
-        <li class="menu-item menu-item-archives">
-          <a href="/archives/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
-            
-            Archives
-          </a>
-        </li>
-      
 
       
     </ul>
@@ -235,6 +225,163 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.flyawayji.top/2019/05/07/项目上IO流的使用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jacob">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/2.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jacob's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/07/项目上IO流的使用/" itemprop="url">项目上IO流的使用</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-05-07T14:10:48+08:00">
+                2019-05-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>项目上使用mock数据</p>
+<ol>
+<li>IO流（File）简介</li>
+<li>本地项目上IO流的使用</li>
+<li>总结</li>
+</ol>
+<h4 id="1-IO流简介"><a href="#1-IO流简介" class="headerlink" title="1.IO流简介"></a>1.IO流简介</h4><p>主要包括两种IO流（输入/输出），又分为字符流和字节流，整体结构图如下：</p>
+<p><img src="/images/2.jpg" alt></p>
+<p>更详细的：<a href="http://www.cnblogs.com/zhaoyanjun/p/6292399.html" target="_blank" rel="noopener">IO流(File)详细介绍</a></p>
+<h4 id="2-项目使用"><a href="#2-项目使用" class="headerlink" title="2.项目使用"></a>2.项目使用</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">final String fileName = IntegrationConstants.STUB_RESPONSE;</span><br><span class="line">try</span><br><span class="line">&#123;</span><br><span class="line">	ObjectMapper mapper = new ObjectMapper();</span><br><span class="line">	final ClassLoader classLoader = getClass().getClassLoader();</span><br><span class="line">	return mapper.readValue(new File(classLoader.getResource(fileName).getFile()), Response.class);</span><br><span class="line">&#125;</span><br><span class="line">catch (IOException exception) &#123;</span><br><span class="line">	LOGGER.error(errorComment,  exception);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>先获取classLoader对象</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public ClassLoader getClassLoader() &#123;</span><br><span class="line">        ClassLoader cl = getClassLoader0();</span><br><span class="line">        if (cl == null)</span><br><span class="line">            return null;</span><br><span class="line">        SecurityManager sm = System.getSecurityManager();</span><br><span class="line">        if (sm != null) &#123;</span><br><span class="line">            ClassLoader.checkClassLoaderPermission(cl, Reflection.getCallerClass());</span><br><span class="line">        &#125;</span><br><span class="line">        return cl;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>classLoader 获取file 的路径URL</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * Find resources from the VM&apos;s built-in classloader.</span><br><span class="line"> */</span><br><span class="line">private static URL getBootstrapResource(String name) &#123;</span><br><span class="line">    URLClassPath ucp = getBootstrapClassPath();</span><br><span class="line">    Resource res = ucp.getResource(name);</span><br><span class="line">    return res != null ? res.getURL() : null;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最后通过ObjectMapper 转成我们需要的对象和数据。</p>
+<h4 id="3-总结"><a href="#3-总结" class="headerlink" title="3.总结"></a>3.总结</h4><p>前后端分离项目中可以使用mock数据来返回json 给前端测试。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
     
       
 
@@ -401,14 +548,23 @@
             
               <div class="site-state-item site-state-posts">
               
-                <a href="/archives/">
+                <a href="/archives">
               
-                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-count">2</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
             
 
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
             
 
             
@@ -416,7 +572,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>
