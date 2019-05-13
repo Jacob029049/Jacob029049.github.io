@@ -1943,7 +1943,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #8eb8ff;
+  background: #a4b6f2;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -3110,4 +3110,7 @@ pre .javascript .function {
   .post-body {
     text-align: justify;
   }
+}
+.fa-CSDN:before {
+  content: "\e601";
 }
