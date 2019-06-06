@@ -249,6 +249,144 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.flyawayji.top/2019/06/06/springboot-springsecurity/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jacob">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/2.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jacob's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/06/springboot-springsecurity/" itemprop="url">springboot-springsecurity</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-06-06T15:05:14+08:00">
+                2019-06-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h4 id="SpringBoot-Spring-security"><a href="#SpringBoot-Spring-security" class="headerlink" title="SpringBoot+Spring security"></a>SpringBoot+Spring security</h4><ol>
+<li>前言</li>
+<li>搭建步骤</li>
+<li><p>总结</p>
+<h6 id="1-前言"><a href="#1-前言" class="headerlink" title="1.前言"></a>1.前言</h6><p>学习使用SpringBoot 结合spring security 搭建一个登录拦截和跳转的demo。</p>
+<h6 id="2-搭建步骤"><a href="#2-搭建步骤" class="headerlink" title="2.搭建步骤"></a>2.搭建步骤</h6><p>(1)springboot 搭建项目，先新建TestController 测试springboot项目是否成功</p>
+<p>(2)引入mybatis、springsecurity的maven依赖，附上pom.xml </p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependencies&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-starter&lt;/artifactId&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;</span><br><span class="line">            &lt;scope&gt;test&lt;/scope&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;mysql&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.mybatis.spring.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;mybatis-spring-boot-starter&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;1.3.1&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">    &lt;/dependencies&gt;</span><br></pre></td></tr></table></figure>
+<p>(3)数据库是mysql，在application下添加 配置信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">server.port=8900</span><br><span class="line"></span><br><span class="line">spring.datasource.driver-class-name=com.mysql.jdbc.Driver</span><br><span class="line">spring.datasource.url = jdbc:mysql://localhost:3306/qa?useUnicode=true&amp;characterEncoding=utf-8&amp;useSSL=true&amp;serverTimezone=UTC</span><br><span class="line">spring.datasource.username=root</span><br><span class="line">spring.datasource.password=123456</span><br><span class="line"></span><br><span class="line">#开启Mybatis下划线命名转驼峰命名</span><br><span class="line">mybatis.configuration.map-underscore-to-camel-case=true</span><br></pre></td></tr></table></figure>
+<p>同时在resources 目录下添加static文件夹，新建登录页和主页<br><img src="/images/springsecurity1.jpg" alt><br>(4)src目录下新建dao、bean 读取数据库<br>(5)src 目录下新建service 注入dao<br>(6)controller 下新建LoginController ，编写两个测试接口<br>(7))src目录下新建security,在新建CustomUserDetailsService 实现UserDetailsService接口 ，重写loadUserByUsername方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException &#123;</span><br><span class="line">        Collection&lt;GrantedAuthority&gt; authorities = new ArrayList&lt;&gt;();</span><br><span class="line">        // 从数据库中取出用户信息</span><br><span class="line">        SysUser user = userService.selectByName(username);</span><br><span class="line"></span><br><span class="line">        // 判断用户是否存在</span><br><span class="line">        if(user == null) &#123;</span><br><span class="line">            throw new UsernameNotFoundException(&quot;用户名不存在&quot;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // 添加权限</span><br><span class="line">        List&lt;SysUserRole&gt; userRoles = userRoleService.listByUserId(user.getId());</span><br><span class="line">        for (SysUserRole userRole : userRoles) &#123;</span><br><span class="line">            SysRole role = roleService.selectById(userRole.getRoleId());</span><br><span class="line">            authorities.add(new SimpleGrantedAuthority(role.getName()));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // 返回UserDetails实现类</span><br><span class="line">        return new User(user.getName(), user.getPassword(), authorities);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>(8)security下 新建WebSecurityConfig 继承 WebSecurityConfigurerAdapter<br>注入userDetailsService 重写configure(HttpSecurity http)方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">protected void configure(HttpSecurity http) throws Exception &#123;</span><br><span class="line">        http.authorizeRequests()</span><br><span class="line">                // 如果有允许匿名的url，填在下面</span><br><span class="line">//                .antMatchers().permitAll()</span><br><span class="line">                .anyRequest().authenticated()</span><br><span class="line">                .and()</span><br><span class="line">                // 设置登陆页</span><br><span class="line">                .formLogin().loginPage(&quot;/login&quot;)</span><br><span class="line">                // 设置登陆成功页</span><br><span class="line">                .defaultSuccessUrl(&quot;/&quot;).permitAll()</span><br><span class="line">                // 自定义登陆用户名和密码参数，默认为username和password</span><br><span class="line">//                .usernameParameter(&quot;username&quot;)</span><br><span class="line">//                .passwordParameter(&quot;password&quot;)</span><br><span class="line">                .and()</span><br><span class="line">                .logout().permitAll();</span><br><span class="line"></span><br><span class="line">        // 关闭CSRF跨域</span><br><span class="line">        http.csrf().disable();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>(9)附上项目结构目录图</p>
+<p><img src="/images/springsecurity2.jpg" alt><br>(10)测试 登录<br><img src="/images/springsecurity3.jpg" alt></p>
+<h6 id="3-总结"><a href="#3-总结" class="headerlink" title="3.总结"></a>3.总结</h6><p>代码地址：<a href="https://github.com/Jacob029049/springboot-security.git" target="_blank" rel="noopener">https://github.com/Jacob029049/springboot-security.git</a><br>数据库sql：提交到github目录</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://www.flyawayji.top/2019/05/16/SSM框架的搭建/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -834,7 +972,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -856,7 +994,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">7</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>

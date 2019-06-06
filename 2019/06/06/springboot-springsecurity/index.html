@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="java,IO,">
+  <meta name="keywords" content="java,springboot,springsecurity,">
 
 
 
@@ -79,20 +79,22 @@
 
 
 
-<meta name="description" content="项目上使用mock数据  IO流（File）简介 本地项目上IO流的使用 总结  1.IO流简介主要包括两种IO流（输入/输出），又分为字符流和字节流，整体结构图如下：  更详细的：IO流(File)详细介绍 2.项目使用12345678910final String fileName = IntegrationConstants.STUB_RESPONSE;try&amp;#123;	ObjectMap">
-<meta name="keywords" content="java,IO">
+<meta name="description" content="SpringBoot+Spring security 前言 搭建步骤 总结 1.前言学习使用SpringBoot 结合spring security 搭建一个登录拦截和跳转的demo。 2.搭建步骤(1)springboot 搭建项目，先新建TestController 测试springboot项目是否成功 (2)引入mybatis、springsecurity的maven依赖，附上pom.xml">
+<meta name="keywords" content="java,springboot,springsecurity">
 <meta property="og:type" content="article">
-<meta property="og:title" content="项目上IO流的使用">
-<meta property="og:url" content="https://www.flyawayji.top/2019/05/07/项目上IO流的使用/index.html">
+<meta property="og:title" content="springboot-springsecurity">
+<meta property="og:url" content="https://www.flyawayji.top/2019/06/06/springboot-springsecurity/index.html">
 <meta property="og:site_name" content="Jacob&#39;s Blog">
-<meta property="og:description" content="项目上使用mock数据  IO流（File）简介 本地项目上IO流的使用 总结  1.IO流简介主要包括两种IO流（输入/输出），又分为字符流和字节流，整体结构图如下：  更详细的：IO流(File)详细介绍 2.项目使用12345678910final String fileName = IntegrationConstants.STUB_RESPONSE;try&amp;#123;	ObjectMap">
+<meta property="og:description" content="SpringBoot+Spring security 前言 搭建步骤 总结 1.前言学习使用SpringBoot 结合spring security 搭建一个登录拦截和跳转的demo。 2.搭建步骤(1)springboot 搭建项目，先新建TestController 测试springboot项目是否成功 (2)引入mybatis、springsecurity的maven依赖，附上pom.xml">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="https://www.flyawayji.top/images/2.jpg">
-<meta property="og:updated_time" content="2019-05-08T05:19:29.001Z">
+<meta property="og:image" content="https://www.flyawayji.top/images/springsecurity1.jpg">
+<meta property="og:image" content="https://www.flyawayji.top/images/springsecurity2.jpg">
+<meta property="og:image" content="https://www.flyawayji.top/images/springsecurity3.jpg">
+<meta property="og:updated_time" content="2019-06-06T07:08:50.821Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="项目上IO流的使用">
-<meta name="twitter:description" content="项目上使用mock数据  IO流（File）简介 本地项目上IO流的使用 总结  1.IO流简介主要包括两种IO流（输入/输出），又分为字符流和字节流，整体结构图如下：  更详细的：IO流(File)详细介绍 2.项目使用12345678910final String fileName = IntegrationConstants.STUB_RESPONSE;try&amp;#123;	ObjectMap">
-<meta name="twitter:image" content="https://www.flyawayji.top/images/2.jpg">
+<meta name="twitter:title" content="springboot-springsecurity">
+<meta name="twitter:description" content="SpringBoot+Spring security 前言 搭建步骤 总结 1.前言学习使用SpringBoot 结合spring security 搭建一个登录拦截和跳转的demo。 2.搭建步骤(1)springboot 搭建项目，先新建TestController 测试springboot项目是否成功 (2)引入mybatis、springsecurity的maven依赖，附上pom.xml">
+<meta name="twitter:image" content="https://www.flyawayji.top/images/springsecurity1.jpg">
 
 
 
@@ -122,13 +124,13 @@
 
 
 
-  <link rel="canonical" href="https://www.flyawayji.top/2019/05/07/项目上IO流的使用/">
+  <link rel="canonical" href="https://www.flyawayji.top/2019/06/06/springboot-springsecurity/">
 
 
 
 
 
-  <title>项目上IO流的使用 | Jacob's Blog</title>
+  <title>springboot-springsecurity | Jacob's Blog</title>
   
 
 
@@ -255,7 +257,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.flyawayji.top/2019/05/07/项目上IO流的使用/">
+    <link itemprop="mainEntityOfPage" href="https://www.flyawayji.top/2019/06/06/springboot-springsecurity/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jacob">
@@ -272,7 +274,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">项目上IO流的使用</h2>
+          <h2 class="post-title" itemprop="name headline">springboot-springsecurity</h2>
         
 
         <div class="post-meta">
@@ -284,8 +286,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-05-07T14:10:48+08:00">
-                2019-05-07
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-06-06T15:05:14+08:00">
+                2019-06-06
               </time>
             
 
@@ -294,28 +296,6 @@
             
           </span>
 
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/java/" itemprop="url" rel="index">
-                    <span itemprop="name">java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
           
 
           
@@ -349,22 +329,25 @@
       
 
       
-        <p>项目上使用mock数据</p>
-<ol>
-<li>IO流（File）简介</li>
-<li>本地项目上IO流的使用</li>
-<li>总结</li>
+        <h4 id="SpringBoot-Spring-security"><a href="#SpringBoot-Spring-security" class="headerlink" title="SpringBoot+Spring security"></a>SpringBoot+Spring security</h4><ol>
+<li>前言</li>
+<li>搭建步骤</li>
+<li><p>总结</p>
+<h6 id="1-前言"><a href="#1-前言" class="headerlink" title="1.前言"></a>1.前言</h6><p>学习使用SpringBoot 结合spring security 搭建一个登录拦截和跳转的demo。</p>
+<h6 id="2-搭建步骤"><a href="#2-搭建步骤" class="headerlink" title="2.搭建步骤"></a>2.搭建步骤</h6><p>(1)springboot 搭建项目，先新建TestController 测试springboot项目是否成功</p>
+<p>(2)引入mybatis、springsecurity的maven依赖，附上pom.xml </p>
+</li>
 </ol>
-<h4 id="1-IO流简介"><a href="#1-IO流简介" class="headerlink" title="1.IO流简介"></a>1.IO流简介</h4><p>主要包括两种IO流（输入/输出），又分为字符流和字节流，整体结构图如下：</p>
-<p><img src="/images/2.jpg" alt></p>
-<p>更详细的：<a href="http://www.cnblogs.com/zhaoyanjun/p/6292399.html" target="_blank" rel="noopener">IO流(File)详细介绍</a></p>
-<h4 id="2-项目使用"><a href="#2-项目使用" class="headerlink" title="2.项目使用"></a>2.项目使用</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">final String fileName = IntegrationConstants.STUB_RESPONSE;</span><br><span class="line">try</span><br><span class="line">&#123;</span><br><span class="line">	ObjectMapper mapper = new ObjectMapper();</span><br><span class="line">	final ClassLoader classLoader = getClass().getClassLoader();</span><br><span class="line">	return mapper.readValue(new File(classLoader.getResource(fileName).getFile()), Response.class);</span><br><span class="line">&#125;</span><br><span class="line">catch (IOException exception) &#123;</span><br><span class="line">	LOGGER.error(errorComment,  exception);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>先获取classLoader对象</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public ClassLoader getClassLoader() &#123;</span><br><span class="line">        ClassLoader cl = getClassLoader0();</span><br><span class="line">        if (cl == null)</span><br><span class="line">            return null;</span><br><span class="line">        SecurityManager sm = System.getSecurityManager();</span><br><span class="line">        if (sm != null) &#123;</span><br><span class="line">            ClassLoader.checkClassLoaderPermission(cl, Reflection.getCallerClass());</span><br><span class="line">        &#125;</span><br><span class="line">        return cl;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<p>classLoader 获取file 的路径URL</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * Find resources from the VM&apos;s built-in classloader.</span><br><span class="line"> */</span><br><span class="line">private static URL getBootstrapResource(String name) &#123;</span><br><span class="line">    URLClassPath ucp = getBootstrapClassPath();</span><br><span class="line">    Resource res = ucp.getResource(name);</span><br><span class="line">    return res != null ? res.getURL() : null;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>最后通过ObjectMapper 转成我们需要的对象和数据。</p>
-<h4 id="3-总结"><a href="#3-总结" class="headerlink" title="3.总结"></a>3.总结</h4><p>前后端分离项目中可以使用mock数据来返回json 给前端测试。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependencies&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-starter&lt;/artifactId&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;</span><br><span class="line">            &lt;scope&gt;test&lt;/scope&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;mysql&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.mybatis.spring.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;mybatis-spring-boot-starter&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;1.3.1&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">    &lt;/dependencies&gt;</span><br></pre></td></tr></table></figure>
+<p>(3)数据库是mysql，在application下添加 配置信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">server.port=8900</span><br><span class="line"></span><br><span class="line">spring.datasource.driver-class-name=com.mysql.jdbc.Driver</span><br><span class="line">spring.datasource.url = jdbc:mysql://localhost:3306/qa?useUnicode=true&amp;characterEncoding=utf-8&amp;useSSL=true&amp;serverTimezone=UTC</span><br><span class="line">spring.datasource.username=root</span><br><span class="line">spring.datasource.password=123456</span><br><span class="line"></span><br><span class="line">#开启Mybatis下划线命名转驼峰命名</span><br><span class="line">mybatis.configuration.map-underscore-to-camel-case=true</span><br></pre></td></tr></table></figure>
+<p>同时在resources 目录下添加static文件夹，新建登录页和主页<br><img src="/images/springsecurity1.jpg" alt><br>(4)src目录下新建dao、bean 读取数据库<br>(5)src 目录下新建service 注入dao<br>(6)controller 下新建LoginController ，编写两个测试接口<br>(7))src目录下新建security,在新建CustomUserDetailsService 实现UserDetailsService接口 ，重写loadUserByUsername方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException &#123;</span><br><span class="line">        Collection&lt;GrantedAuthority&gt; authorities = new ArrayList&lt;&gt;();</span><br><span class="line">        // 从数据库中取出用户信息</span><br><span class="line">        SysUser user = userService.selectByName(username);</span><br><span class="line"></span><br><span class="line">        // 判断用户是否存在</span><br><span class="line">        if(user == null) &#123;</span><br><span class="line">            throw new UsernameNotFoundException(&quot;用户名不存在&quot;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // 添加权限</span><br><span class="line">        List&lt;SysUserRole&gt; userRoles = userRoleService.listByUserId(user.getId());</span><br><span class="line">        for (SysUserRole userRole : userRoles) &#123;</span><br><span class="line">            SysRole role = roleService.selectById(userRole.getRoleId());</span><br><span class="line">            authorities.add(new SimpleGrantedAuthority(role.getName()));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // 返回UserDetails实现类</span><br><span class="line">        return new User(user.getName(), user.getPassword(), authorities);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>(8)security下 新建WebSecurityConfig 继承 WebSecurityConfigurerAdapter<br>注入userDetailsService 重写configure(HttpSecurity http)方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">protected void configure(HttpSecurity http) throws Exception &#123;</span><br><span class="line">        http.authorizeRequests()</span><br><span class="line">                // 如果有允许匿名的url，填在下面</span><br><span class="line">//                .antMatchers().permitAll()</span><br><span class="line">                .anyRequest().authenticated()</span><br><span class="line">                .and()</span><br><span class="line">                // 设置登陆页</span><br><span class="line">                .formLogin().loginPage(&quot;/login&quot;)</span><br><span class="line">                // 设置登陆成功页</span><br><span class="line">                .defaultSuccessUrl(&quot;/&quot;).permitAll()</span><br><span class="line">                // 自定义登陆用户名和密码参数，默认为username和password</span><br><span class="line">//                .usernameParameter(&quot;username&quot;)</span><br><span class="line">//                .passwordParameter(&quot;password&quot;)</span><br><span class="line">                .and()</span><br><span class="line">                .logout().permitAll();</span><br><span class="line"></span><br><span class="line">        // 关闭CSRF跨域</span><br><span class="line">        http.csrf().disable();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>(9)附上项目结构目录图</p>
+<p><img src="/images/springsecurity2.jpg" alt><br>(10)测试 登录<br><img src="/images/springsecurity3.jpg" alt></p>
+<h6 id="3-总结"><a href="#3-总结" class="headerlink" title="3.总结"></a>3.总结</h6><p>代码地址：<a href="https://github.com/Jacob029049/springboot-security.git" target="_blank" rel="noopener">https://github.com/Jacob029049/springboot-security.git</a><br>数据库sql：提交到github目录</p>
 
       
     </div>
@@ -426,7 +409,9 @@
           
             <a href="/tags/java/" rel="tag"># java</a>
           
-            <a href="/tags/IO/" rel="tag"># IO</a>
+            <a href="/tags/springboot/" rel="tag"># springboot</a>
+          
+            <a href="/tags/springsecurity/" rel="tag"># springsecurity</a>
           
         </div>
       
@@ -439,8 +424,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/05/06/my-first-blog/" rel="next" title="纪念一下搭建成功个人博客">
-                <i class="fa fa-chevron-left"></i> 纪念一下搭建成功个人博客
+              <a href="/2019/05/16/SSM框架的搭建/" rel="next" title="SSM框架的搭建">
+                <i class="fa fa-chevron-left"></i> SSM框架的搭建
               </a>
             
           </div>
@@ -448,10 +433,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/05/13/项目上诸葛IO的使用/" rel="prev" title="项目上诸葛IO的使用">
-                项目上诸葛IO的使用 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -601,7 +582,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-IO流简介"><span class="nav-number">1.</span> <span class="nav-text">1.IO流简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-项目使用"><span class="nav-number">2.</span> <span class="nav-text">2.项目使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-总结"><span class="nav-number">3.</span> <span class="nav-text">3.总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#SpringBoot-Spring-security"><span class="nav-number">1.</span> <span class="nav-text">SpringBoot+Spring security</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-前言"><span class="nav-number">1.0.1.</span> <span class="nav-text">1.前言</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-搭建步骤"><span class="nav-number">1.0.2.</span> <span class="nav-text">2.搭建步骤</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#3-总结"><span class="nav-number">1.0.3.</span> <span class="nav-text">3.总结</span></a></li></ol></li></ol></div>
             
 
           </div>
