@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="jacob, blog">
+  <meta name="keywords" content="Spring Java,">
 
 
 
@@ -79,13 +79,22 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="Jacob&#39;s Blog">
-<meta property="og:url" content="https://www.flyawayji.top/index.html">
+<meta name="description" content="[TOC] 转自:https://javadoop.com/post/spring-ioc Spring 最重要的概念是 IOC 和 AOP，本篇文章其实就是要带领大家来分析下 Spring 的 IOC 容器。既然大家平时都要用到 Spring，怎么可以不好好了解 Spring 呢？阅读本文并不能让你成为 Spring 专家，不过一定有助于大家理解 Spring 的很多概念，帮助大家排查应用中和">
+<meta name="keywords" content="Spring Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring IOC 容器源码分析">
+<meta property="og:url" content="https://www.flyawayji.top/2019/07/03/Spring+IOC/index.html">
 <meta property="og:site_name" content="Jacob&#39;s Blog">
+<meta property="og:description" content="[TOC] 转自:https://javadoop.com/post/spring-ioc Spring 最重要的概念是 IOC 和 AOP，本篇文章其实就是要带领大家来分析下 Spring 的 IOC 容器。既然大家平时都要用到 Spring，怎么可以不好好了解 Spring 呢？阅读本文并不能让你成为 Spring 专家，不过一定有助于大家理解 Spring 的很多概念，帮助大家排查应用中和">
 <meta property="og:locale" content="default">
+<meta property="og:image" content="https://www.javadoop.com/blogimages/spring-context/1.png">
+<meta property="og:image" content="https://www.javadoop.com/blogimages/spring-context/2.png">
+<meta property="og:image" content="https://www.javadoop.com/blogimages/spring-context/3.png">
+<meta property="og:updated_time" content="2019-07-03T08:17:04.270Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Jacob&#39;s Blog">
+<meta name="twitter:title" content="Spring IOC 容器源码分析">
+<meta name="twitter:description" content="[TOC] 转自:https://javadoop.com/post/spring-ioc Spring 最重要的概念是 IOC 和 AOP，本篇文章其实就是要带领大家来分析下 Spring 的 IOC 容器。既然大家平时都要用到 Spring，怎么可以不好好了解 Spring 呢？阅读本文并不能让你成为 Spring 专家，不过一定有助于大家理解 Spring 的很多概念，帮助大家排查应用中和">
+<meta name="twitter:image" content="https://www.javadoop.com/blogimages/spring-context/1.png">
 
 
 
@@ -115,13 +124,13 @@
 
 
 
-  <link rel="canonical" href="https://www.flyawayji.top/">
+  <link rel="canonical" href="https://www.flyawayji.top/2019/07/03/Spring+IOC/">
 
 
 
 
 
-  <title>Jacob's Blog</title>
+  <title>Spring IOC 容器源码分析 | Jacob's Blog</title>
   
 
 
@@ -140,8 +149,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -234,9 +242,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -266,9 +274,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/07/03/Spring+IOC/" itemprop="url">Spring IOC 容器源码分析</a></h2>
+          <h2 class="post-title" itemprop="name headline">Spring IOC 容器源码分析</h2>
         
 
         <div class="post-meta">
@@ -300,6 +306,11 @@
           
 
           
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 阅读数
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
 
           
 
@@ -318,9 +329,7 @@
       
 
       
-        
-          
-            <p>[TOC]</p>
+        <p>[TOC]</p>
 <p>转自:<a href="https://javadoop.com/post/spring-ioc" target="_blank" rel="noopener">https://javadoop.com/post/spring-ioc</a></p>
 <p>Spring 最重要的概念是 IOC 和 AOP，本篇文章其实就是要带领大家来分析下 Spring 的 IOC 容器。既然大家平时都要用到 Spring，怎么可以不好好了解 Spring 呢？阅读本文并不能让你成为 Spring 专家，不过一定有助于大家理解 Spring 的很多概念，帮助大家排查应用中和 Spring 相关的一些问题。</p>
 <p>本文采用的源码版本是 4.3.11.RELEASE，算是 5.0.x 前比较新的版本了。为了降低难度，本文所说的所有的内容都是基于 xml 的配置的方式，实际使用已经很少人这么做了，至少不是纯 xml 配置，不过从理解源码的角度来看用这种方式来说无疑是最合适的。</p>
@@ -707,8 +716,6 @@
 <p>本文的缺陷在于对 Spring 预初始化 singleton beans 的过程分析不够，主要是代码量真的比较大，分支旁路众多。同时，虽然附录条目不少，但是庞大的 Spring 真的引出了很多的概念，希望日后有精力可以慢慢补充一些。</p>
 <p>（全文完）</p>
 
-          
-        
       
     </div>
     
@@ -716,299 +723,85 @@
     
 
     
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/path/to/your/wechatqcode ex. /uploads/wechat-qcode.jpg" alt="Jacob wechat" style="width: 200px; max-width: 100%;">
+    <div>ex. subscribe to my blog by scanning my public wechat account</div>
+</div>
 
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Donate comment here</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="Jacob WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="Jacob Alipay">
+        <p>Alipay</p>
+      </div>
+    
+
+    
+      <div id="bitcoin" style="display: inline-block">
+        <img id="bitcoin_qr" src="/images/bitcoin.png" alt="Jacob Bitcoin">
+        <p>Bitcoin</p>
+      </div>
+    
+
+  </div>
+</div>
+
+      </div>
     
 
     
 
     <footer class="post-footer">
       
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.flyawayji.top/2019/06/06/springboot-springsecurity/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jacob">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/2.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jacob's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/06/springboot-springsecurity/" itemprop="url">springboot-springsecurity</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-06-06T15:05:14+08:00">
-                2019-06-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
+        <div class="post-tags">
           
-
+            <a href="/tags/Spring-Java/" rel="tag"># Spring Java</a>
           
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h4 id="SpringBoot-Spring-security"><a href="#SpringBoot-Spring-security" class="headerlink" title="SpringBoot+Spring security"></a>SpringBoot+Spring security</h4><ol>
-<li>前言</li>
-<li>搭建步骤</li>
-<li><p>总结</p>
-<h6 id="1-前言"><a href="#1-前言" class="headerlink" title="1.前言"></a>1.前言</h6><p>学习使用SpringBoot 结合spring security 搭建一个登录拦截和跳转的demo。</p>
-<h6 id="2-搭建步骤"><a href="#2-搭建步骤" class="headerlink" title="2.搭建步骤"></a>2.搭建步骤</h6><p>(1)springboot 搭建项目，先新建TestController 测试springboot项目是否成功</p>
-<p>(2)引入mybatis、springsecurity的maven依赖，附上pom.xml </p>
-</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependencies&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-starter&lt;/artifactId&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;</span><br><span class="line">            &lt;scope&gt;test&lt;/scope&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;mysql&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.mybatis.spring.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;mybatis-spring-boot-starter&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;1.3.1&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">    &lt;/dependencies&gt;</span><br></pre></td></tr></table></figure>
-<p>(3)数据库是mysql，在application下添加 配置信息</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">server.port=8900</span><br><span class="line"></span><br><span class="line">spring.datasource.driver-class-name=com.mysql.jdbc.Driver</span><br><span class="line">spring.datasource.url = jdbc:mysql://localhost:3306/qa?useUnicode=true&amp;characterEncoding=utf-8&amp;useSSL=true&amp;serverTimezone=UTC</span><br><span class="line">spring.datasource.username=root</span><br><span class="line">spring.datasource.password=123456</span><br><span class="line"></span><br><span class="line">#开启Mybatis下划线命名转驼峰命名</span><br><span class="line">mybatis.configuration.map-underscore-to-camel-case=true</span><br></pre></td></tr></table></figure>
-<p>同时在resources 目录下添加static文件夹，新建登录页和主页<br><img src="/images/springsecurity1.jpg" alt><br>(4)src目录下新建dao、bean 读取数据库<br>(5)src 目录下新建service 注入dao<br>(6)controller 下新建LoginController ，编写两个测试接口<br>(7))src目录下新建security,在新建CustomUserDetailsService 实现UserDetailsService接口 ，重写loadUserByUsername方法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException &#123;</span><br><span class="line">        Collection&lt;GrantedAuthority&gt; authorities = new ArrayList&lt;&gt;();</span><br><span class="line">        // 从数据库中取出用户信息</span><br><span class="line">        SysUser user = userService.selectByName(username);</span><br><span class="line"></span><br><span class="line">        // 判断用户是否存在</span><br><span class="line">        if(user == null) &#123;</span><br><span class="line">            throw new UsernameNotFoundException(&quot;用户名不存在&quot;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // 添加权限</span><br><span class="line">        List&lt;SysUserRole&gt; userRoles = userRoleService.listByUserId(user.getId());</span><br><span class="line">        for (SysUserRole userRole : userRoles) &#123;</span><br><span class="line">            SysRole role = roleService.selectById(userRole.getRoleId());</span><br><span class="line">            authorities.add(new SimpleGrantedAuthority(role.getName()));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // 返回UserDetails实现类</span><br><span class="line">        return new User(user.getName(), user.getPassword(), authorities);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<p>(8)security下 新建WebSecurityConfig 继承 WebSecurityConfigurerAdapter<br>注入userDetailsService 重写configure(HttpSecurity http)方法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">protected void configure(HttpSecurity http) throws Exception &#123;</span><br><span class="line">        http.authorizeRequests()</span><br><span class="line">                // 如果有允许匿名的url，填在下面</span><br><span class="line">//                .antMatchers().permitAll()</span><br><span class="line">                .anyRequest().authenticated()</span><br><span class="line">                .and()</span><br><span class="line">                // 设置登陆页</span><br><span class="line">                .formLogin().loginPage(&quot;/login&quot;)</span><br><span class="line">                // 设置登陆成功页</span><br><span class="line">                .defaultSuccessUrl(&quot;/&quot;).permitAll()</span><br><span class="line">                // 自定义登陆用户名和密码参数，默认为username和password</span><br><span class="line">//                .usernameParameter(&quot;username&quot;)</span><br><span class="line">//                .passwordParameter(&quot;password&quot;)</span><br><span class="line">                .and()</span><br><span class="line">                .logout().permitAll();</span><br><span class="line"></span><br><span class="line">        // 关闭CSRF跨域</span><br><span class="line">        http.csrf().disable();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<p>(9)附上项目结构目录图</p>
-<p><img src="/images/springsecurity2.jpg" alt><br>(10)测试 登录<br><img src="/images/springsecurity3.jpg" alt></p>
-<h6 id="3-总结"><a href="#3-总结" class="headerlink" title="3.总结"></a>3.总结</h6><p>代码地址：<a href="https://github.com/Jacob029049/springboot-security.git" target="_blank" rel="noopener">https://github.com/Jacob029049/springboot-security.git</a><br>数据库sql：提交到github目录</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
       
 
       
       
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
       
 
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.flyawayji.top/2019/05/16/SSM框架的搭建/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jacob">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/2.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jacob's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/05/16/SSM框架的搭建/" itemprop="url">SSM框架的搭建</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
             
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-05-16T16:03:54+08:00">
-                2019-05-16
-              </time>
+              <a href="/2019/06/06/springboot-springsecurity/" rel="next" title="springboot-springsecurity">
+                <i class="fa fa-chevron-left"></i> springboot-springsecurity
+              </a>
             
+          </div>
 
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
             
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
+          </div>
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          
-            <h4 id="SSM框架的搭建"><a href="#SSM框架的搭建" class="headerlink" title="SSM框架的搭建"></a>SSM框架的搭建</h4><ol>
-<li>前言</li>
-<li>搭建步骤</li>
-<li>总结</li>
-</ol>
-<p><strong>1.前言</strong><br>    在公司写了一年JS，已经快忘了曾经的后端技术了。。所以，从框架开始搭建，一步一步重新拾起java。</p>
-<p><strong>2. 搭建步骤</strong><br>    (1)新建 maven项目，ide 新建项目 最后项目结构如下：<br><img src="/images/ssm-1.jpg" alt><br>(2)给project添加web目录（web-info、web.xml）手动创建或者ide 添加均可<br>(3)pom.xml 里添加SSM框架的各种 dependency</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependencies&gt;</span><br><span class="line">        &lt;!--Spring--&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-core&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;4.3.5.RELEASE&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-aop&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;4.3.5.RELEASE&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-orm&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;4.3.5.RELEASE&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;!--Spring transaction--&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-tx&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;4.3.5.RELEASE&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-test&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;4.3.5.RELEASE&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-mock&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;2.0.8&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-jdbc&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;4.3.5.RELEASE&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-context&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;4.3.5.RELEASE&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-context-support&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;4.3.5.RELEASE&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-expression&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;4.3.5.RELEASE&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;!--Spring Web + Spring MVC--&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-web&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;4.3.1.RELEASE&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-webmvc&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;4.3.1.RELEASE&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;!--mysql jdbc--&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;mysql&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;5.1.38&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;!--c3p0--&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;c3p0&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;c3p0&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;0.9.1.2&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;!--mybatis--&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.mybatis&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;mybatis&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;3.3.0&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.mybatis&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;mybatis-spring&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;1.2.3&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">    &lt;/dependencies&gt;</span><br></pre></td></tr></table></figure>
-<p>(4)在resources文件夹下 添加applicationContext.xml </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;beans</span><br><span class="line">        xmlns=&quot;http://www.springframework.org/schema/beans&quot;</span><br><span class="line">        xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span><br><span class="line">        xmlns:context=&quot;http://www.springframework.org/schema/context&quot;</span><br><span class="line">        xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd&quot;&gt;</span><br><span class="line"></span><br><span class="line">    &lt;context:annotation-config /&gt;</span><br><span class="line">    &lt;!-- 配置component所在的包，自动加载需要管理的Bean --&gt;</span><br><span class="line">    &lt;context:component-scan base-package=&quot;service,dao&quot; /&gt;</span><br><span class="line"></span><br><span class="line">    &lt;import resource=&quot;spring-mybatis.xml&quot; /&gt;</span><br><span class="line">&lt;/beans&gt;</span><br></pre></td></tr></table></figure>
-<p>(5)在resources文件夹下 添加spring-mybatis.xml (使用的是c3p0连接池)</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;</span><br><span class="line">       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span><br><span class="line">       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd&quot;&gt;</span><br><span class="line"></span><br><span class="line">    &lt;bean id=&quot;configProperties&quot; class=&quot;org.springframework.beans.factory.config.PropertyPlaceholderConfigurer&quot;&gt;</span><br><span class="line">        &lt;property name=&quot;locations&quot;&gt;</span><br><span class="line">            &lt;list&gt;</span><br><span class="line">                &lt;value&gt;classpath:jdbc.properties&lt;/value&gt;</span><br><span class="line">            &lt;/list&gt;</span><br><span class="line">        &lt;/property&gt;</span><br><span class="line">    &lt;/bean&gt;</span><br><span class="line"></span><br><span class="line">    &lt;!-- 配置数据源 --&gt;</span><br><span class="line">    &lt;bean id=&quot;dataSource&quot; class=&quot;com.mchange.v2.c3p0.ComboPooledDataSource&quot;&gt;</span><br><span class="line">        &lt;property name=&quot;driverClass&quot; value=&quot;$&#123;jdbc.driverClassName&#125;&quot;/&gt;</span><br><span class="line">        &lt;property name=&quot;jdbcUrl&quot; value=&quot;$&#123;jdbc.url&#125;&quot;/&gt;</span><br><span class="line">        &lt;property name=&quot;user&quot; value=&quot;$&#123;jdbc.username&#125;&quot;/&gt;</span><br><span class="line">        &lt;property name=&quot;password&quot; value=&quot;$&#123;jdbc.password&#125;&quot;/&gt;</span><br><span class="line">        &lt;property name=&quot;minPoolSize&quot; value=&quot;$&#123;c3p0.minPoolSize&#125;&quot;/&gt;</span><br><span class="line">        &lt;property name=&quot;acquireIncrement&quot; value=&quot;$&#123;c3p0.acquireIncrement&#125;&quot;/&gt;</span><br><span class="line">        &lt;property name=&quot;acquireRetryAttempts&quot; value=&quot;$&#123;c3p0.acquireRetryAttempts&#125;&quot;/&gt;</span><br><span class="line">        &lt;property name=&quot;acquireRetryDelay&quot; value=&quot;$&#123;c3p0.acquireRetryDelay&#125;&quot;/&gt;</span><br><span class="line">        &lt;property name=&quot;autoCommitOnClose&quot; value=&quot;$&#123;c3p0.autoCommitOnClose&#125;&quot;/&gt;</span><br><span class="line">        &lt;property name=&quot;checkoutTimeout&quot; value=&quot;$&#123;c3p0.checkoutTimeout&#125;&quot;/&gt;</span><br><span class="line">        &lt;property name=&quot;idleConnectionTestPeriod&quot; value=&quot;$&#123;c3p0.idleConnectionTestPeriod&#125;&quot;/&gt;</span><br><span class="line">        &lt;property name=&quot;maxIdleTime&quot; value=&quot;$&#123;c3p0.maxIdleTime&#125;&quot;/&gt;</span><br><span class="line">        &lt;property name=&quot;testConnectionOnCheckin&quot; value=&quot;$&#123;c3p0.testConnectionOnCheckin&#125;&quot;/&gt;</span><br><span class="line">        &lt;property name=&quot;maxStatements&quot; value=&quot;$&#123;c3p0.maxStatements&#125;&quot;/&gt;</span><br><span class="line">        &lt;property name=&quot;maxStatementsPerConnection&quot; value=&quot;$&#123;c3p0.maxStatementsPerConnection&#125;&quot;/&gt;</span><br><span class="line">        &lt;property name=&quot;unreturnedConnectionTimeout&quot; value=&quot;$&#123;c3p0.unreturnedConnectionTimeout&#125;&quot;/&gt;</span><br><span class="line">    &lt;/bean&gt;</span><br><span class="line"></span><br><span class="line">    &lt;!-- 配置mybatisSqlSessionFactoryBean --&gt;</span><br><span class="line">    &lt;bean id=&quot;sqlSessionFactory&quot; class=&quot;org.mybatis.spring.SqlSessionFactoryBean&quot;&gt;</span><br><span class="line">        &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;</span><br><span class="line">        &lt;property name=&quot;mapperLocations&quot; value=&quot;classpath:mapper/*.xml&quot;/&gt;</span><br><span class="line">    &lt;/bean&gt;</span><br><span class="line">    &lt;!-- 配置mybatis mapper接口 --&gt;</span><br><span class="line">    &lt;bean class=&quot;org.mybatis.spring.mapper.MapperScannerConfigurer&quot;&gt;</span><br><span class="line">        &lt;property name=&quot;basePackage&quot; value=&quot;dao&quot;/&gt;</span><br><span class="line">        &lt;!--&lt;property name=&quot;sqlSessionFactoryBeanName&quot; value=&quot;sqlSessionFactory&quot;/&gt;--&gt;</span><br><span class="line">    &lt;/bean&gt;</span><br><span class="line"></span><br><span class="line">    &lt;!-- 配置事务管理器 --&gt;</span><br><span class="line">    &lt;bean id=&quot;transactionManager&quot; class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;</span><br><span class="line">        &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;</span><br><span class="line">    &lt;/bean&gt;</span><br><span class="line"></span><br><span class="line">&lt;/beans&gt;</span><br></pre></td></tr></table></figure>
-<p>(6) 在web.xml里去添加 spring 和spring mvc 的配置</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;web-app xmlns=&quot;http://xmlns.jcp.org/xml/ns/javaee&quot;</span><br><span class="line">         xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span><br><span class="line">         xsi:schemaLocation=&quot;http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd&quot;</span><br><span class="line">         version=&quot;4.0&quot;&gt;</span><br><span class="line">    &lt;welcome-file-list&gt;</span><br><span class="line">        &lt;welcome-file&gt;/index.jsp&lt;/welcome-file&gt;</span><br><span class="line">    &lt;/welcome-file-list&gt;</span><br><span class="line">    &lt;!-- Spring MVC配置 --&gt;</span><br><span class="line">    &lt;servlet&gt;</span><br><span class="line">        &lt;servlet-name&gt;spring&lt;/servlet-name&gt;</span><br><span class="line">        &lt;servlet-class&gt;org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class&gt;</span><br><span class="line">        &lt;!--Spring-servlet.xml config--&gt;</span><br><span class="line">        &lt;init-param&gt;</span><br><span class="line">            &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;</span><br><span class="line">            &lt;param-value&gt;classpath:spring-servlet.xml&lt;/param-value&gt;</span><br><span class="line">        &lt;/init-param&gt;</span><br><span class="line">        &lt;!-- load-on-startup元素标记容器是否在启动的时候就加载这个servlet(实例化并调用其init()方法) --&gt;</span><br><span class="line">        &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;</span><br><span class="line">    &lt;/servlet&gt;</span><br><span class="line">    &lt;servlet-mapping&gt;</span><br><span class="line">        &lt;servlet-name&gt;spring&lt;/servlet-name&gt;</span><br><span class="line">        &lt;url-pattern&gt;/&lt;/url-pattern&gt;</span><br><span class="line">    &lt;/servlet-mapping&gt;</span><br><span class="line"></span><br><span class="line">    &lt;!--spring listener config--&gt;</span><br><span class="line">    &lt;context-param&gt;</span><br><span class="line">        &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;</span><br><span class="line">        &lt;param-value&gt;classpath:applicationContext.xml&lt;/param-value&gt;</span><br><span class="line">    &lt;/context-param&gt;</span><br><span class="line">    &lt;listener&gt;</span><br><span class="line">        &lt;listener-class&gt;org.springframework.web.context.ContextLoaderListener&lt;/listener-class&gt;</span><br><span class="line">    &lt;/listener&gt;</span><br><span class="line">&lt;/web-app&gt;</span><br></pre></td></tr></table></figure>
-<p>(7) spring-mybatis.xml 对应的model 类和 mapper。ps: 网上有用maven 自动生成的，可以自行百度，贴上mapper。只要对应相应的model即可</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;!DOCTYPE mapper PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot; &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;</span><br><span class="line">&lt;mapper namespace=&quot;dao.StudentMapper&quot;&gt;</span><br><span class="line">    &lt;resultMap id=&quot;BaseResultMap&quot; type=&quot;model.Student&quot;&gt;</span><br><span class="line">        &lt;id column=&quot;uid&quot; jdbcType=&quot;INTEGER&quot; property=&quot;uid&quot; /&gt;</span><br><span class="line">        &lt;result column=&quot;name&quot; jdbcType=&quot;VARCHAR&quot; property=&quot;name&quot; /&gt;</span><br><span class="line">        &lt;result column=&quot;age&quot; jdbcType=&quot;INTEGER&quot; property=&quot;age&quot; /&gt;</span><br><span class="line">    &lt;/resultMap&gt;</span><br><span class="line">    &lt;sql id=&quot;Base_Column_List&quot;&gt;</span><br><span class="line">        uid, name, age</span><br><span class="line">    &lt;/sql&gt;</span><br><span class="line"></span><br><span class="line">    &lt;select id=&quot;selectAll&quot; resultMap=&quot;BaseResultMap&quot;&gt;</span><br><span class="line">        SELECT</span><br><span class="line">        &lt;include refid=&quot;Base_Column_List&quot;/&gt;</span><br><span class="line">        from student</span><br><span class="line">    &lt;/select&gt;</span><br><span class="line">    &lt;delete id=&quot;deleteByUid&quot; parameterType=&quot;model.Student&quot;&gt;</span><br><span class="line">        delete from student</span><br><span class="line">        where uid = #&#123;uid,jdbcType=INTEGER&#125;</span><br><span class="line">    &lt;/delete&gt;</span><br><span class="line">    &lt;insert id=&quot;insert&quot; parameterType=&quot;model.Student&quot;&gt;</span><br><span class="line">        insert into student (uid, name, age)</span><br><span class="line">        values (#&#123;uid,jdbcType=INTEGER&#125;, #&#123;name,jdbcType=VARCHAR&#125;, #&#123;age,jdbcType=INTEGER&#125;)</span><br><span class="line">    &lt;/insert&gt;</span><br><span class="line"></span><br><span class="line">    &lt;update id=&quot;updateByUid&quot; parameterType=&quot;model.Student&quot;&gt;</span><br><span class="line">        update student</span><br><span class="line">        set Name = #&#123;name,jdbcType=VARCHAR&#125;,</span><br><span class="line">        Age = #&#123;age,jdbcType=INTEGER&#125;,</span><br><span class="line">        where uid = #&#123;uid,jdbcType=INTEGER&#125;</span><br><span class="line">    &lt;/update&gt;</span><br><span class="line">&lt;/mapper&gt;</span><br></pre></td></tr></table></figure>
-<p>对应的dao 里面的interface</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">package dao;</span><br><span class="line">import model.Student;</span><br><span class="line">import org.springframework.stereotype.Repository;</span><br><span class="line"></span><br><span class="line">import java.util.List;</span><br><span class="line"></span><br><span class="line">@Repository</span><br><span class="line">public interface StudentMapper &#123;</span><br><span class="line">    int deleteByUid(int uid);</span><br><span class="line"></span><br><span class="line">    int insert(Student record);</span><br><span class="line"></span><br><span class="line">    List&lt;Student&gt; selectAll();</span><br><span class="line"></span><br><span class="line">    int updateByUid(Student record);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>(8)新建java 目录下 dao、service 和 controller 并且在xml中配置。<br>    注：service 下引用 dao ; controller 引用 service</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">package controller;</span><br><span class="line"></span><br><span class="line">import com.alibaba.fastjson.JSON;</span><br><span class="line">import model.Student;</span><br><span class="line">import org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line">import org.springframework.web.bind.annotation.GetMapping;</span><br><span class="line">import org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line">import org.springframework.web.bind.annotation.RequestMethod;</span><br><span class="line">import org.springframework.web.bind.annotation.RestController;</span><br><span class="line">import service.IStudentService;</span><br><span class="line"></span><br><span class="line">import java.util.List;</span><br><span class="line"></span><br><span class="line">@RestController</span><br><span class="line">@RequestMapping(&quot;/student&quot;)</span><br><span class="line">public class StudentController &#123;</span><br><span class="line">    @Autowired</span><br><span class="line">    private IStudentService studentService;</span><br><span class="line"></span><br><span class="line">    @RequestMapping(value = &quot;/queryAll&quot;,method = RequestMethod.GET)</span><br><span class="line">    public String queryAllStudent() &#123;</span><br><span class="line">        List&lt;Student&gt; students = studentService.selectAll();</span><br><span class="line">        String jsonResult = JSON.toJSONString(students);</span><br><span class="line">        return jsonResult;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>(9)在tomcat 中打包和启动,附上一张最后项目的目录图<br><img src="/images/ssm-2.jpg" alt><br><strong>3.总结</strong><br>搭建基础SSM框架，接下来要多学习springboot 结合springcloud 等。附上项目github地址：<a href="https://github.com/Jacob029049/ssm-demo" target="_blank" rel="noopener">https://github.com/Jacob029049/ssm-demo</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -1018,420 +811,11 @@
   </article>
 
 
-    
-      
 
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.flyawayji.top/2019/05/13/项目上诸葛IO的使用/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jacob">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/2.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jacob's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/05/13/项目上诸葛IO的使用/" itemprop="url">项目上诸葛IO的使用</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-05-13T14:49:59+08:00">
-                2019-05-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h4 id="诸葛IO"><a href="#诸葛IO" class="headerlink" title="诸葛IO"></a>诸葛IO</h4><ol>
-<li><p>诸葛IO产品介绍</p>
-<p> 诸葛io是数据智能收集，其核心在于对用户行为的深入分析与洞察，支持前端代码埋点、全埋点、可视化圈选埋点及服务端采集等多种技术方案，利用实时数据进行高效自动化运营的。</p>
-</li>
-<li><p>项目中如何使用<br> (1) jsp页面引用 js</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;input type=&quot;hidden&quot; id=&quot;zhugeKey&quot; name=&quot;zhugeKey&quot; value=&quot;$&#123;zhugeKey&#125;&quot;/&gt;</span><br><span class="line">&lt;input type=&quot;hidden&quot; id=&quot;zhugeIdentifyJson&quot; name=&quot;zhugeIdentifyJson&quot; value=&apos;$&#123;zhugeIdentifyJson&#125;&apos;/&gt;</span><br><span class="line"></span><br><span class="line">&lt;script type=&quot;text/javascript&quot; src=&quot;/_ui/responsive/js/components/zhuge/initZhuge.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">&lt;script type=&quot;text/javascript&quot; src=&quot;/_ui/responsive/js/components/zhuge/zhugeCommon.js&quot;&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure>
-<p>(2)initZhuge.js(安装诸葛SDK)</p>
-</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">if(activeZhugeFlag === &apos;actived&apos;)&#123;</span><br><span class="line">			//activeZhugeFlag 是自己项目诸葛的开关</span><br><span class="line">			//以下js是诸葛的SDK</span><br><span class="line">	    window.zhuge = window.zhuge || [];</span><br><span class="line">	    window.zhuge.methods = &quot;_init identify track getDid getSid getKey setSuperProperty setUserProperties setPlatform&quot;.split(&quot; &quot;);</span><br><span class="line">	    window.zhuge.factory = function (b) &#123;</span><br><span class="line">	        return function () &#123;</span><br><span class="line">	            var a = Array.prototype.slice.call(arguments);</span><br><span class="line">	            a.unshift(b);</span><br><span class="line">	            window.zhuge.push(a);</span><br><span class="line">	            return window.zhuge;</span><br><span class="line">	        &#125;;</span><br><span class="line">	    &#125;;</span><br><span class="line">	    for (var i = 0; i &lt; window.zhuge.methods.length; i++) &#123;</span><br><span class="line">	        var key = window.zhuge.methods[i];</span><br><span class="line">	        window.zhuge[key] = window.zhuge.factory(key);</span><br><span class="line">	    &#125;</span><br><span class="line">	    window.zhuge.load = function (b, x) &#123;</span><br><span class="line">	        if (!document.getElementById(&quot;zhuge-js&quot;)) &#123;</span><br><span class="line">	            var a = document.createElement(&quot;script&quot;);</span><br><span class="line">	            var verDate = new Date();</span><br><span class="line">	            var verStr = verDate.getFullYear().toString() + verDate.getMonth().toString() + verDate.getDate().toString();</span><br><span class="line">	</span><br><span class="line">	            a.type = &quot;text/javascript&quot;;</span><br><span class="line">	            a.id = &quot;zhuge-js&quot;;</span><br><span class="line">	            a.async = !0;</span><br><span class="line">	            a.src = &quot;https://u2.zhugeio.com/zhuge.js?v=&quot; + verStr;</span><br><span class="line">	            a.onerror = function () &#123;</span><br><span class="line">	            	//测试诸葛加载失败时，加个标志位</span><br><span class="line">	            	window.ACCLZG.isLoadSuccess = false;</span><br><span class="line">	                window.zhuge.identify = window.zhuge.track = function (ename, props, callback) &#123;</span><br><span class="line">	                    if (callback &amp;&amp; Object.prototype.toString.call(callback) === &apos;[object Function]&apos;) &#123;</span><br><span class="line">	                        callback();</span><br><span class="line">	                    &#125; else if (Object.prototype.toString.call(props) === &apos;[object Function]&apos;) &#123;</span><br><span class="line">	                        props();</span><br><span class="line">	                    &#125;</span><br><span class="line">	                &#125;;</span><br><span class="line">	            &#125;;</span><br><span class="line">	            var c = document.getElementsByTagName(&quot;script&quot;)[0];</span><br><span class="line">	            c.parentNode.insertBefore(a, c);</span><br><span class="line">	            window.zhuge._init(b, x);</span><br><span class="line">	        &#125;</span><br><span class="line">	    &#125;;</span><br><span class="line">	    var zhugeKey = document.getElementById(&apos;zhugeKey&apos;).value;</span><br><span class="line">	    window.zhuge.load(zhugeKey,&#123;</span><br><span class="line">	    	//启用全埋点采集（默认false）</span><br><span class="line">	        autoTrack:true</span><br><span class="line">	    &#125;);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<p>(3)zhugeCommon.js(识别用户和使用)</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">//为用户设置一个识别码</span><br><span class="line">var ZGID = JSON.parse(zhugeIdentifyJson);</span><br><span class="line">zhuge.identify(ZGID.zhugeCurrentUserID,&#123;</span><br><span class="line">    		&quot;用户类型&quot;:ZGID.zhugeCurrentUserType,</span><br><span class="line">    		&quot;ADA ID&quot;:ZGID.zhugeCurrentUserID,</span><br><span class="line">    		&quot;OpenID&quot;:ZGID.zhugeCurrentUserOpenID,</span><br><span class="line">    		&quot;unionID&quot;:ZGID.zhugeCurrentUserUnionID,</span><br><span class="line">    		&quot;sighupDate&quot;:ZGID.zhugeCurrentUserSighupDate</span><br><span class="line">    	&#125;);</span><br><span class="line"></span><br><span class="line">//记录事件</span><br><span class="line">zhuge.track(&apos;页面_&apos;+pageTitle,&#123;</span><br><span class="line">        		&apos;事件类型&apos;:&apos;页面浏览&apos;,</span><br><span class="line">        		&apos;页面类别&apos;:&apos;其他&apos;,</span><br><span class="line">        		&apos;页面详情&apos;:pageTitle,</span><br><span class="line">    			&apos;访客类别&apos;:$D(&apos;#sessionValue_currentUserScope&apos;).val()||&apos;Visitor&apos; </span><br><span class="line">        	&#125;);</span><br></pre></td></tr></table></figure>
-<ol start="3">
-<li>总结<br> 本文是记录诸葛IO的使用的一些心得，详细介绍可去：<a href="https://docs.zhugeio.com/dev/js_visual_event.html" target="_blank" rel="noopener">诸葛IO开发文档</a></li>
-</ol>
-
-          
-        
+    <div class="post-spread">
       
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
   </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.flyawayji.top/2019/05/07/项目上IO流的使用/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jacob">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/2.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jacob's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/05/07/项目上IO流的使用/" itemprop="url">项目上IO流的使用</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-05-07T14:10:48+08:00">
-                2019-05-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/java/" itemprop="url" rel="index">
-                    <span itemprop="name">java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>项目上使用mock数据</p>
-<ol>
-<li>IO流（File）简介</li>
-<li>本地项目上IO流的使用</li>
-<li>总结</li>
-</ol>
-<h4 id="1-IO流简介"><a href="#1-IO流简介" class="headerlink" title="1.IO流简介"></a>1.IO流简介</h4><p>主要包括两种IO流（输入/输出），又分为字符流和字节流，整体结构图如下：</p>
-<p><img src="/images/2.jpg" alt></p>
-<p>更详细的：<a href="http://www.cnblogs.com/zhaoyanjun/p/6292399.html" target="_blank" rel="noopener">IO流(File)详细介绍</a></p>
-<h4 id="2-项目使用"><a href="#2-项目使用" class="headerlink" title="2.项目使用"></a>2.项目使用</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">final String fileName = IntegrationConstants.STUB_RESPONSE;</span><br><span class="line">try</span><br><span class="line">&#123;</span><br><span class="line">	ObjectMapper mapper = new ObjectMapper();</span><br><span class="line">	final ClassLoader classLoader = getClass().getClassLoader();</span><br><span class="line">	return mapper.readValue(new File(classLoader.getResource(fileName).getFile()), Response.class);</span><br><span class="line">&#125;</span><br><span class="line">catch (IOException exception) &#123;</span><br><span class="line">	LOGGER.error(errorComment,  exception);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>先获取classLoader对象</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public ClassLoader getClassLoader() &#123;</span><br><span class="line">        ClassLoader cl = getClassLoader0();</span><br><span class="line">        if (cl == null)</span><br><span class="line">            return null;</span><br><span class="line">        SecurityManager sm = System.getSecurityManager();</span><br><span class="line">        if (sm != null) &#123;</span><br><span class="line">            ClassLoader.checkClassLoaderPermission(cl, Reflection.getCallerClass());</span><br><span class="line">        &#125;</span><br><span class="line">        return cl;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<p>classLoader 获取file 的路径URL</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * Find resources from the VM&apos;s built-in classloader.</span><br><span class="line"> */</span><br><span class="line">private static URL getBootstrapResource(String name) &#123;</span><br><span class="line">    URLClassPath ucp = getBootstrapClassPath();</span><br><span class="line">    Resource res = ucp.getResource(name);</span><br><span class="line">    return res != null ? res.getURL() : null;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>最后通过ObjectMapper 转成我们需要的对象和数据。</p>
-<h4 id="3-总结"><a href="#3-总结" class="headerlink" title="3.总结"></a>3.总结</h4><p>前后端分离项目中可以使用mock数据来返回json 给前端测试。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.flyawayji.top/2019/05/06/my-first-blog/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jacob">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/2.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jacob's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/05/06/my-first-blog/" itemprop="url">纪念一下搭建成功个人博客</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-05-06T11:32:01+08:00">
-                2019-05-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-  </section>
-
-  
 
 
           </div>
@@ -1439,6 +823,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -1459,8 +847,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -1538,6 +935,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BeanFactory-简介"><span class="nav-number">2.</span> <span class="nav-text">BeanFactory 简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动过程分析"><span class="nav-number">3.</span> <span class="nav-text">启动过程分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建-Bean-容器前的准备工作"><span class="nav-number">3.1.</span> <span class="nav-text">创建 Bean 容器前的准备工作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建-Bean-容器，加载并注册-Bean"><span class="nav-number">3.2.</span> <span class="nav-text">创建 Bean 容器，加载并注册 Bean</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#BeanDefinition-接口定义"><span class="nav-number">3.2.1.</span> <span class="nav-text">BeanDefinition 接口定义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#customizeBeanFactory"><span class="nav-number">3.2.2.</span> <span class="nav-text">customizeBeanFactory</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#加载-Bean-loadBeanDefinitions"><span class="nav-number">3.2.3.</span> <span class="nav-text">加载 Bean: loadBeanDefinitions</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#doRegisterBeanDefinitions："><span class="nav-number">3.2.3.1.</span> <span class="nav-text">doRegisterBeanDefinitions：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#processBeanDefinition-解析-bean-标签"><span class="nav-number">3.2.3.2.</span> <span class="nav-text">processBeanDefinition 解析 bean 标签</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#注册-Bean"><span class="nav-number">3.2.3.3.</span> <span class="nav-text">注册 Bean</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bean-容器实例化完成后"><span class="nav-number">3.3.</span> <span class="nav-text">Bean 容器实例化完成后</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#准备-Bean-容器-prepareBeanFactory"><span class="nav-number">3.4.</span> <span class="nav-text">准备 Bean 容器: prepareBeanFactory</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#初始化所有的-singleton-beans"><span class="nav-number">3.5.</span> <span class="nav-text">初始化所有的 singleton beans</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#preInstantiateSingletons"><span class="nav-number">3.5.1.</span> <span class="nav-text">preInstantiateSingletons</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#getBean"><span class="nav-number">3.5.2.</span> <span class="nav-text">getBean</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#创建-Bean"><span class="nav-number">3.5.3.</span> <span class="nav-text">创建 Bean</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#创建-Bean-实例"><span class="nav-number">3.5.3.1.</span> <span class="nav-text">创建 Bean 实例</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#bean-属性注入"><span class="nav-number">3.5.3.2.</span> <span class="nav-text">bean 属性注入</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#initializeBean"><span class="nav-number">3.5.3.3.</span> <span class="nav-text">initializeBean</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附录"><span class="nav-number">4.</span> <span class="nav-text">附录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#id-和-name"><span class="nav-number">4.1.</span> <span class="nav-text">id 和 name</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置是否允许-Bean-覆盖、是否允许循环依赖"><span class="nav-number">4.2.</span> <span class="nav-text">配置是否允许 Bean 覆盖、是否允许循环依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#profile"><span class="nav-number">4.3.</span> <span class="nav-text">profile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#工厂模式生成-Bean"><span class="nav-number">4.4.</span> <span class="nav-text">工厂模式生成 Bean</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FactoryBean"><span class="nav-number">4.5.</span> <span class="nav-text">FactoryBean</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#初始化-Bean-的回调"><span class="nav-number">4.6.</span> <span class="nav-text">初始化 Bean 的回调</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#销毁-Bean-的回调"><span class="nav-number">4.7.</span> <span class="nav-text">销毁 Bean 的回调</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ConversionService"><span class="nav-number">4.8.</span> <span class="nav-text">ConversionService</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bean-继承"><span class="nav-number">4.9.</span> <span class="nav-text">Bean 继承</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方法注入"><span class="nav-number">4.10.</span> <span class="nav-text">方法注入</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#lookup-method"><span class="nav-number">4.10.1.</span> <span class="nav-text">lookup-method</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#replaced-method"><span class="nav-number">4.10.2.</span> <span class="nav-text">replaced-method</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BeanPostProcessor"><span class="nav-number">4.11.</span> <span class="nav-text">BeanPostProcessor</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -1699,6 +1112,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
