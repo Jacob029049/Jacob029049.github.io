@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/2.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/2.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="jacob, blog">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1.JDK 和 JRE 有什么区别？JRE是java运行环境，包含了java虚拟机，java基础类库。JDK是java开发工具包。JDK包含了JRE，同时还包含了编译java源码的编译器javac，还包含了很多java程序调试和分析的工具：jconsole，jvisualvm等工具软件，还包含了java程序编写所需的文档和demo例子程序。 2.== 和 equals 的区别是什么？(1) ==是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java面试题(一)">
+<meta property="og:url" content="https://www.flyawayji.top/2019/07/04/Java面试题-一/index.html">
+<meta property="og:site_name" content="Jacob&#39;s Blog">
+<meta property="og:description" content="1.JDK 和 JRE 有什么区别？JRE是java运行环境，包含了java虚拟机，java基础类库。JDK是java开发工具包。JDK包含了JRE，同时还包含了编译java源码的编译器javac，还包含了很多java程序调试和分析的工具：jconsole，jvisualvm等工具软件，还包含了java程序编写所需的文档和demo例子程序。 2.== 和 equals 的区别是什么？(1) ==是">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://www.flyawayji.top/images/java_1.png">
+<meta property="og:image" content="https://www.flyawayji.top/images/java_2.png">
+<meta property="og:image" content="https://www.flyawayji.top/images/java_3.png">
+<meta property="og:updated_time" content="2019-07-04T09:19:38.996Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java面试题(一)">
+<meta name="twitter:description" content="1.JDK 和 JRE 有什么区别？JRE是java运行环境，包含了java虚拟机，java基础类库。JDK是java开发工具包。JDK包含了JRE，同时还包含了编译java源码的编译器javac，还包含了很多java程序调试和分析的工具：jconsole，jvisualvm等工具软件，还包含了java程序编写所需的文档和demo例子程序。 2.== 和 equals 的区别是什么？(1) ==是">
+<meta name="twitter:image" content="https://www.flyawayji.top/images/java_1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.flyawayji.top/2019/07/04/Java面试题-一/">
+
+
+
+
+
+  <title>Java面试题(一) | Jacob's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta custom-logo">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Jacob's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.flyawayji.top/2019/07/04/Java面试题-一/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jacob">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/2.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jacob's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">Java面试题(一)</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-07-04T17:11:34+08:00">
+                2019-07-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 阅读数
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>1.JDK 和 JRE 有什么区别？</strong><br>JRE是java运行环境，包含了java虚拟机，java基础类库。<br>JDK是java开发工具包。JDK包含了JRE，同时还包含了编译java源码的编译器javac，还包含了很多java程序调试和分析的工具：jconsole，jvisualvm等工具软件，还包含了java程序编写所需的文档和demo例子程序。</p>
+<p><strong>2.== 和 equals 的区别是什么？</strong><br>(1) ==是操作符；equals是Object中的方法。<br>(2) == 比较两个对象是否指向内存中同一地址。equals()比较两个对象的内容是否相等。</p>
+<p><strong>3.两个对象的 hashCode()相同，则 equals()也一定为 true，对吗？</strong><br>不一定。hashCode是非随机生成的，它有一定的规律，我们可以构造一些具有相同hashCode但value值不一样的。</p>
+<p><strong>4.final, finally, finalize 的区别</strong><br>(1)final是修饰符,被final修饰的类不可以被继承;被final修饰的方法不可以被重写;被final修饰的变量不可以被改变<br>(2)finally是异常处理try catch后会进入的一个方法块<br>(3)finalize是Object中的一个方法，这个方法是由垃圾收集器在确定这个对象没有被引用时对这个对象调用的。</p>
+<p><strong>5.java 中操作字符串都有哪些类？它们之间有什么区别？</strong><br>String、StringBuffer、StringBuilder<br>(1)String是不可变的字符串常量；执行速度慢<br>(2)StringBuffer是字符串变量；线程安全<br>(3)StringBuilder是可变字符串变量；线程不安全</p>
+<p><strong>6.接口和抽象类的区别</strong><br>(1)抽象类可以有构造方法，接口中不能有构造方法。<br>(2)抽象类中可以有普通成员变量，接口中没有普通成员变量。<br>(3)抽象类中可以包含静态方法，接口中不能包含静态方法。<br>(4) 一个类可以实现多个接口，但只能继承一个抽象类。</p>
+<p><strong>7..Collection 和 Collections 有什么区别？</strong><br>(1)Collection是集合类的顶级接口，其派生了两个子接口 Set 和 List。<br>(2)Collections则是集合类的一个工具类/帮助类，其中提供了一系列静态方法，用于对集合中元素进行排序、搜索以及线程安全等各种操作。</p>
+<p><strong>8.Java集合简介和区别介绍</strong><br>两个根接口:Collection 、Map<br><img src="/images/java_1.png" alt="Collection继承树"><br><img src="/images/java_2.png" alt="Map继承树"><br>(3)List:可以允许重复对象;可以插入多个null元素;是一个有序容器<br>(2)Set：不允许重复对象;只允许一个null元素;无序容器<br>(3)Map:Map不是Collection的子接口或实现类,Map是一个接口;Map是键值对;Map里Key和value都可以为null，但是key只能存在一个null</p>
+<p><strong>9.HashMap、TreeMap 和 Hashtable 有什么区别？</strong><br>(1)HashMap: 继承自AbstractMap类，key和value 都可以为null，线程不安全，默认容量为16，扩容时要求为2的整数次幂。<br>(2)TreeMap :继承自AbstractMap类，实现了SortedMap接口，有序。<br>(3)Hashtable:继承自Dictionary类，key和value都不可以为null，线程安全，在不指定容量的情况下的默认容量为11，扩容方式为原来的2倍加1</p>
+<p><strong>10.HashMap的实现原理</strong><br><a href="https://www.cnblogs.com/yangming1996/p/7997468.html" target="_blank" rel="noopener">https://www.cnblogs.com/yangming1996/p/7997468.html</a><br><a href="https://blog.csdn.net/pihailailou/article/details/82053420" target="_blank" rel="noopener">https://blog.csdn.net/pihailailou/article/details/82053420</a></p>
+<p><strong>11.ArrayList 、 LinkedList和Vector  的区别</strong><br>(1)ArrayList 是线性表，底层使用数组实现，在尾端插入和访问数据时效率较高<br>(2)LinkedList 是双向链表，在中间插入或者插入时效率较高，在访问数据时效率较低<br>(3)Vector是线程安全的，是一种老的动态数组，效率很低</p>
+<p><strong>12.线程和进程 协程的区别</strong><br>(1)先有进程，然后进程可以创建线程，线程是依附在进程里面的， 线程里面可以包含多个协程<br>(2)进程是系统资源分配的最小单位；线程就是运行在进程上下文中的逻辑流；协程通过在线程中实现调度，避免了陷入内核级别的上下文切换造成的性能损失，进而突破了线程在IO上的性能瓶颈。</p>
+<p><strong>13.创建线程有哪几种方式</strong><br>(1)继承Thread类创建线程 (2)实现Runnable接口 无返回值 (3)通过Callable和Future 有返回值</p>
+<p><strong>14.线程的生命周期</strong><br>(1)新建(new Thread) : 当创建Thread类的一个实例（对象）时，此线程进入新建状态（未被启动）。例如：Thread t1=new Thread();<br>(2)就绪(runnable):线程已经被启动，正在等待被分配给CPU时间片，也就是说此时线程正在就绪队列中排队等候得到CPU资源。例如：t1.start();<br>(3)运行（running）:线程获得CPU资源正在执行任务（run()方法），此时除非此线程自动放弃CPU资源或者有优先级更高的线程进入，线程将一直运行到结束。<br>(4)死亡(dead):当线程执行完毕或被其它线程杀死，线程就进入死亡状态，这时线程不可能再进入就绪状态等待执行。自然终止：正常运行run()方法后终止<br>异常终止：调用stop()方法让一个线程终止运行<br>(5)堵塞(blocked):由于某种原因导致正在运行的线程让出CPU并暂停自己的执行，即进入堵塞状态。</p>
+<p><strong>14.CountDownLatch、CyclicBarrier和Semaphore</strong><br>(1)CountDownLatch :倒计时器,线程A等待n个线程执行，每个线程执行完n-1，当n减至0时，线程A在执行<br>(2)CyclicBarrier:线程ABCD互相等待，直到执行完同一任务或者超时exception<br>(3)Semaphore:控制同时访问的线程个数，n个线程同时执行，信号量为5，剩下的n-5个线程等前面5个线程release()之后再执行</p>
+<p><img src="/images/java_3.png" alt><br>详细：<a href="https://www.cnblogs.com/dolphin0520/p/3920397.html" target="_blank" rel="noopener">https://www.cnblogs.com/dolphin0520/p/3920397.html</a></p>
+<p><strong>15.创建线程池有哪几种方式、参数</strong><br>(1)newFixedThreadPool(int nThreads):创建一个固定长度的线程池，每当提交一个任务就创建一个线程，直到达到线程池的最大数量，这时线程规模将不再变化，当线程发生未预期的错误而结束时，线程池会补充一个新的线程<br>(2)newCachedThreadPool():创建一个可缓存的线程池，如果线程池的规模超过了处理需求，将自动回收空闲线程，而当需求增加时，则可以自动添加新线程，线程池的规模不存在任何限制<br>(3)newSingleThreadExecutor():这是一个单线程的Executor，它创建单个工作线程来执行任务，如果这个线程异常结束，会创建一个新的来替代它；它的特点是能确保依照任务在队列中的顺序来串行执行<br>(4)newScheduledThreadPool(int corePoolSize):创建了一个固定长度的线程池，而且以延迟或定时的方式来执行任务<br><strong>核心参数：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">private volatile long  keepAliveTime;    //线程存货时间   </span><br><span class="line">private volatile int   corePoolSize;     //核心池的大小（即线程池中的线程数目大于这个参数时，提交的任务会被放进任务缓存队列）</span><br><span class="line">private volatile int   maximumPoolSize;   //线程池最大能容忍的线程数</span><br><span class="line"> </span><br><span class="line">private volatile int   poolSize;       //线程池中当前的线程数</span><br><span class="line"></span><br><span class="line">private volatile ThreadFactory threadFactory;   //线程工厂，用来创建线程</span><br><span class="line"> </span><br><span class="line">private int largestPoolSize;   //用来记录线程池中曾经出现过的最大线程数</span><br><span class="line"> </span><br><span class="line">private long completedTaskCount;   //用来记录已经执行完毕的任务个数</span><br></pre></td></tr></table></figure>
+<p><a href="https://www.cnblogs.com/dolphin0520/p/3932921.html" target="_blank" rel="noopener">https://www.cnblogs.com/dolphin0520/p/3932921.html</a></p>
+<p><strong>16.锁（悲观锁，乐观锁cas和ABA）</strong><br>(1)悲观锁:在使用数据的时候一定有别的线程来修改数据，因此在获取数据的时候会先加锁，确保数据不会被别的线程修改。synchronized关键字和Lock的实现类都是悲观锁。<br>(2)乐观锁: 每次去拿数据的时候都认为别人不会修改，所以不会上锁。其实现方式有一种比较典型的就是冲突检测和数据更新 Compare and Swap ( CAS )。<br><strong>CAS缺点:</strong> 1.循环时间长开销大   2.只能保证一个共享变量的原子操作  3.ABA问题<br><strong>ABA问题:</strong> <a href="https://www.jianshu.com/p/72d02353dc7e" target="_blank" rel="noopener">https://www.jianshu.com/p/72d02353dc7e</a></p>
+<p><strong>17.synchronized 和 volatile 的区别</strong><br>(1)volatile 是变量修饰符；synchronized 是修饰类、方法、代码段。<br>(2)volatile 仅能实现变量的修改可见性，不能保证原子性；而 synchronized 则可以保证变量的修改可见性和原子性。<br>(3)volatile 不会造成线程的阻塞；synchronized 可能会造成线程的阻塞。</p>
+<p><strong>18.sleep()  、join()和yield()有什么区别</strong><br>(1).sleep()：在指定的毫秒数内让当前正在执行的线程休眠，让其他线程有机会继续执行，但它并不释放对象锁。可以使低优先级的线程得到执行的机会，当然也可以让同优先级、高优先级的线程有执行的机会。<br>(2)yield()：使当前线程重新回到可执行状态，所以执行yield()的线程有可能在进入到可执行状态后，马上又被执行，也不会释放锁标志，区别在于，它没有参数，而且yield()方法只能使同优先级或者高优先级的线程得到执行机会，这也和sleep()方法不同<br>(3)join()：线程A加入线程B，线程B执行完之后执行线程A</p>
+<p><strong>19.缓存（缓存穿透，雪崩的解决方案）</strong><br>(1)缓存穿透:查询某一不存在的数据（缓存不能命中），总是请求数据库。<br>解决方案:  缓存和数据库都取不到的值，可以设置成key-null，并且有效时间设置短一点<br>(2)缓存雪崩:很多数据在缓存中到期或者缓存服务器宕机，而同一时间大量请求数据库，造成数据库服务器宕机。<br>解决方案: 1.缓存数据的过期时间设置随机，防止同一时间大量数据过期现象发生。2.设置热点数据永远不过期。<br>(3)缓存击穿:某个key 的数据过期，后台又有大量的请求只能到DB，造成DB压力过大。解决方案: 1.设置热点数据永远不过期。2.加互斥锁</p>
+<p><strong>20.GC在什么时候，对什么东西，做了什么事情</strong><br>(1)<strong>首先</strong>：JVM把内存分为新生代和老年代两个内存区，新生代又分为Eden和Survivor两块<br>(2)<strong>什么时候</strong>：1.新创建的对象由Eden分配内存时，内存不足时触发Minor GC,这时会把存活的对象转移进Survivor区。2.当新生代的对象升为老年代的对象时，且对象大于剩余可用空间触发Full GC<br>(3)<strong>什么东西</strong>：①超出作用域的对象/引用计数为空的对象。②从GC Root开始搜索，且搜索不到的对象。③从root搜索不到，而且经过第一次标记、清理后，仍然没有复活的对象。<br>(4)<strong>什么事情</strong>：1.新生代中，选用复制算法，把Eden 和Survivor1 中存活的对象分配到Survivor2 中。2.老生代中，使用“标记-整理”或“标记-清理”算法进行回收。<br>详细：<a href="https://www.cnblogs.com/little-YTMM/p/5613642.html" target="_blank" rel="noopener">https://www.cnblogs.com/little-YTMM/p/5613642.html</a></p>
+<p><strong>21.Spring事务传播机制</strong><br>(1) PROPAGATION_REQUIRED     如果当前没有事务，就新建一个事务，如果已经存在一个事务中，加入到这个事务中。这是最常见的选择。<br>(2)PROPAGATION_SUPPORTS     支持当前事务，如果当前没有事务，就以非事务方式执行。<br>(3)PROPAGATION_MANDATORY     使用当前的事务，如果当前没有事务，就抛出异常。<br>(4)PROPAGATION_REQUIRES_NEW     新建事务，如果当前存在事务，把当前事务挂起。<br>(5)PROPAGATION_NOT_SUPPORTED     以非事务方式执行操作，如果当前存在事务，就把当前事务挂起。<br>(6)PROPAGATION_NEVER     以非事务方式执行，如果当前存在事务，则抛出异常。<br>(7)PROPAGATION_NESTED     如果当前存在事务，则在嵌套事务内执行。如果当前没有事务，则执行与PROPAGATION_REQUIRED类似的操作。<br>详细：<a href="https://blog.csdn.net/u010963948/article/details/82761383" target="_blank" rel="noopener">https://blog.csdn.net/u010963948/article/details/82761383</a></p>
+<p><strong>22.Redis 有哪些类型</strong><br>Redis支持五种数据类型：string（字符串），hash（哈希），list（列表），set（集合）及zset(sorted set：有序集合)。 </p>
+<p><strong>23.Redis有哪几种数据淘汰策略？</strong><br>(1)noeviction:返回错误当内存限制达到并且客户端尝试执行会让更多内存被使用的命令（大部分的写入指令，但DEL和几个例外）<br>(2)allkeys-lru: 尝试回收最少使用的键（LRU），使得新添加的数据有空间存放。(3)volatile-lru: 尝试回收最少使用的键（LRU），但仅限于在过期集合的键,使得新添加的数据有空间存放。<br>(4)allkeys-random: 回收随机的键使得新添加的数据有空间存放。<br>(5)volatile-random: 回收随机的键使得新添加的数据有空间存放，但仅限于在过期集合的键。<br>(6)volatile-ttl: 回收在过期集合的键，并且优先回收存活时间（TTL）较短的键,使得新添加的数据有空间存放。</p>
+<p><strong>24.什么是Redis持久化？Redis有哪几种持久化方式？优缺点是什么？</strong><br>持久化就是把内存的数据写到磁盘中去，防止服务宕机了内存数据丢失。<br>Redis 提供了两种持久化方式:RDB（默认） 和AOF 。<br><strong>存储结构:</strong> 内容是redis通讯协议(RESP)格式的命令文本存储。RESP:是redis客户端和服务端之前使用的一种通讯协议；RESP 的特点：实现简单、快速解析、可读性好。<br><strong>优缺点:</strong><br>(1)aof文件比rdb更新频率高，优先使用aof还原数据。<br>(2)aof比rdb更安全也更大<br>(3)rdb性能比aof好<br>(4)如果两个都配了优先加载AOF</p>
+<p><strong>25.Spring IOC 如何实现</strong><br>(1)refresh核心方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">public void refresh() throws BeansException, IllegalStateException &#123;</span><br><span class="line">//加锁</span><br><span class="line">        Object var1 = this.startupShutdownMonitor;</span><br><span class="line">        synchronized(this.startupShutdownMonitor) &#123;</span><br><span class="line">        //做一些准备工作，记录context的startup时间，设置closed为false，active为true，</span><br><span class="line">            this.prepareRefresh();</span><br><span class="line">            //核心方法，主要做完成BeanFactory的创建，bean配置文件的加载，解析和注册。</span><br><span class="line">            ConfigurableListableBeanFactory beanFactory = this.obtainFreshBeanFactory();</span><br><span class="line">            //设置 BeanFactory 的类加载器，添加几个 BeanPostProcessor，手动注册几个特殊的 bean</span><br><span class="line">            this.prepareBeanFactory(beanFactory);</span><br><span class="line"></span><br><span class="line">            try &#123;</span><br><span class="line">            // 在容器初始化以后，Spring 会负责调用里面的 postProcessBeanFactory 方法</span><br><span class="line">            // 具体的子类可以在这步的时候添加一些特殊的 BeanFactoryPostProcessor 的实现类或做点什么事</span><br><span class="line">                this.postProcessBeanFactory(beanFactory);</span><br><span class="line">            // 调用 BeanFactoryPostProcessor 各个实现类的 postProcessBeanFactory(factory) 方法</span><br><span class="line">                this.invokeBeanFactoryPostProcessors(beanFactory);</span><br><span class="line">                // 注册 BeanPostProcessor 的实现类，</span><br><span class="line">                this.registerBeanPostProcessors(beanFactory);</span><br><span class="line">                // 初始化当前 ApplicationContext 的 MessageSource，</span><br><span class="line">                this.initMessageSource();</span><br><span class="line">                // 初始化当前 ApplicationContext 的事件广播器</span><br><span class="line">                this.initApplicationEventMulticaster();</span><br><span class="line">                // 具体的子类可以在这里初始化一些特殊的 Bean</span><br><span class="line">                this.onRefresh();</span><br><span class="line">                // 注册事件监听器</span><br><span class="line">                this.registerListeners();</span><br><span class="line">                // 初始化所有的 singleton beans</span><br><span class="line">                //（lazy-init 的除外）</span><br><span class="line">                this.finishBeanFactoryInitialization(beanFactory);</span><br><span class="line">                // 最后，广播事件，ApplicationContext 初始化完成</span><br><span class="line">                this.finishRefresh();</span><br><span class="line">            &#125; </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>(2)obtainFreshBeanFactory()中refreshBeanFactory()方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">protected final void refreshBeanFactory() throws BeansException &#123;</span><br><span class="line">        if (this.hasBeanFactory()) &#123;</span><br><span class="line">            this.destroyBeans();</span><br><span class="line">            this.closeBeanFactory();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        try &#123;</span><br><span class="line">            DefaultListableBeanFactory beanFactory = this.createBeanFactory();</span><br><span class="line">            beanFactory.setSerializationId(this.getId());</span><br><span class="line">            //配置是否允许 BeanDefinition 覆盖、是否允许循环引用。</span><br><span class="line">            this.customizeBeanFactory(beanFactory);</span><br><span class="line">            //根据配置，加载各个 Bean，然后放到 BeanFactory 中。</span><br><span class="line">            this.loadBeanDefinitions(beanFactory);</span><br><span class="line">            Object var2 = this.beanFactoryMonitor;</span><br><span class="line">            synchronized(this.beanFactoryMonitor) &#123;</span><br><span class="line">                this.beanFactory = beanFactory;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; catch (IOException var5) &#123;</span><br><span class="line">            throw new ApplicationContextException(&quot;I/O error parsing bean definition source for &quot; + this.getDisplayName(), var5);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p><strong>大概步骤</strong>：<br>1.首先进入refresh()方法，该方法是spring 的核心方法，嵌入了从准备到初始化完成的一系列操作，其中核心方法是obtainFreshBeanFactory()。<br>2.obtainFreshBeanFactory()方法是把配置文件解析成一个个 Bean 定义，注册到 BeanFactory 中，核心方法是refreshBeanFactory()。<br>3.refreshBeanFactory() 核心方法是loadBeanDefinitions()，主要是通过XmlBeanDefinitionReader来加载bean 的定义，先通过InputStream读取当前已经被加载的配置文件，读取好后再通过doLoadBeanDefinitions()中的registerBeanDefinitions()方法注册BeanDefinitions到beanfactory中<br>4.prepareBeanFactory(beanFactory)设置类加载器等。<br>5.最后BeanPostProcessor 的实现子类、事件监听器、初始化MessageSource等。<br>6.finishBeanFactoryInitialization()初始化所有的 singleton beans。<br>7.finishRefresh()广播通知，ApplicationContext初始化完成。<br><a href="https://www.flyawayji.top/2019/07/03/Spring+IOC/">https://www.flyawayji.top/2019/07/03/Spring+IOC/</a></p>
+<p><strong>26.Spring AOP 实现原理</strong><br><a href="https://javadoop.com/post/spring-aop-source" target="_blank" rel="noopener">https://javadoop.com/post/spring-aop-source</a></p>
+<p><strong>27.动态代理（cglib 与 JDK）</strong><br>(1)原理区别：<br>1.java动态代理是利用反射机制生成一个实现代理接口的匿名类，在调用具体方法前调用InvokeHandler来处理。<br>2.cglib动态代理是利用asm开源包，对代理对象类的class文件加载进来，通过修改其字节码生成子类来处理。<br>(2)spring代理的选择<br>1.如果目标对象实现了接口，默认情况下会采用JDK的动态代理实现AOP<br>2.如果目标对象实现了接口，可以强制使用CGLIB实现AOP<br>3.如果目标对象没有实现了接口，必须采用CGLIB库，spring会自动在JDK动态代理和CGLIB之间转换<br>(3)JDK动态代理和CGLIB字节码生成的区别？<br> 1.JDK动态代理只能对实现了接口的类生成代理，而不能针对类<br> 2.CGLIB是针对类实现代理，主要是对指定的类生成一个子类，覆盖其中的方法</p>
+<p><strong>28.sql优化</strong><br>(1)对查询进行优化，要尽量避免全表扫描，首先应考虑在 where 及 order by 涉及的列上建立索引。<br>(2)应尽量避免在 where 子句中对字段进行 null 值判断，否则将导致引擎放弃使用索引而进行全表扫描<br><a href="https://blog.csdn.net/jie_liang/article/details/77340905" target="_blank" rel="noopener">https://blog.csdn.net/jie_liang/article/details/77340905</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/path/to/your/wechatqcode ex. /uploads/wechat-qcode.jpg" alt="Jacob wechat" style="width: 200px; max-width: 100%;">
+    <div>ex. subscribe to my blog by scanning my public wechat account</div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Donate comment here</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="Jacob WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="Jacob Alipay">
+        <p>Alipay</p>
+      </div>
+    
+
+    
+      <div id="bitcoin" style="display: inline-block">
+        <img id="bitcoin_qr" src="/images/bitcoin.png" alt="Jacob Bitcoin">
+        <p>Bitcoin</p>
+      </div>
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/03/Spring+IOC/" rel="next" title="Spring IOC 容器源码分析">
+                <i class="fa fa-chevron-left"></i> Spring IOC 容器源码分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/2.png" alt="Jacob">
+            
+              <p class="site-author-name" itemprop="name">Jacob</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/Jacob029049" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://blog.csdn.net/u013363895" target="_blank" title="CSDN">
+                      
+                        <i class="fa fa-fw fa-copyright"></i>CSDN</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jacob</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a></div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人
+    </span>
+  
+
+  
+    <span class="site-pv">
+      总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
